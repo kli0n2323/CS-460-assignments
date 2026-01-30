@@ -1,6 +1,15 @@
 from hw1_simple import add_strints, simple_recursive_multiplication
 from hw1_karatsuba import karatsuba_multiplication
-import time
+import time, statistics
+
+def bench(fn, x, y, reps=200):
+    times = []
+    for _ in range(reps):
+        t0 = time.perf_counter()
+        fn(x, y)
+        t1 = time.perf_counter()
+        times.append(t1-t0)
+    return statistics.median(times), statistics.mean(times)
 
 # SANITY CHECK --
 
@@ -18,18 +27,11 @@ if __name__ == "__main__":
     ]
 
     for x, y in tests:
-        # Compare against Python int multiplication for correctness.
-        want = str(int(x) * int(y))
+        s_med, s_avg = bench(simple_recursive_multiplication, x, y)
+        k_med, k_avg = bench(karatsuba_multiplication, x, y)
+        print(len(x), "digits",
+              "| SIMPLE MEDIAN:", s_med,
+              "| KARATSUBA MEDIAN:", k_med,
+              "| SPEEDUP:", s_med / k_med)
 
-        s_start = time.time()
-        s_got = simple_recursive_multiplication(x, y)
-        s_end = time.time()
-        s_duration = s_end - s_start
-        print("[ SIMPLE: ] " + f"{x} * {y} = {s_got}  (ok={s_got == want})" + f" TIME: {s_duration}")
-
-        k_start = time.time()
-        k_got = karatsuba_multiplication(x, y)
-        k_end = time.time()
-        k_duration = k_end - k_start
-        print("[ KARATSUBA: ] " + f"{x} * {y} = {k_got}  (ok={k_got == want})" + f" TIME: {k_duration}")
-        print('')
+       
