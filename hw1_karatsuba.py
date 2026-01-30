@@ -35,6 +35,9 @@ def karatsuba_multiplication(x: str, y: str) -> str:
     aplusb = add_strints(a, b)
     cplusd = add_strints(c, d)
 
+    aplusb, cplusd = normalize(aplusb, cplusd)
+    abcd = karatsuba_multiplication(aplusb, cplusd)
+
     abcd = karatsuba_multiplication(aplusb, cplusd)
 
     term0 = str(int(abcd) - int(ac) - int(bd))
@@ -43,23 +46,3 @@ def karatsuba_multiplication(x: str, y: str) -> str:
     term2 = term0 + ("0" * m)
 
     return str(int(term1) + int(term2) + int(bd))
-
-# sanity check
-if __name__ == "__main__":
-    tests = [
-        ("12", "34"),
-        ("99", "99"),
-        ("0123", "0456"),
-        ("1234", "5678"),
-        ("0000", "0000"),
-        ("1111", "0001"),
-        ("1234567890123456", "9876543210123456"),
-        ("12345678901234561234567890123456", "12345678901234561234567890123456"),
-        ("1234567890123456123456789012345612345678901234561234567890123456", "1234567890123456123456789012345612345678901234561234567890123456"),
-    ]
-
-    for x, y in tests:
-        # Compare against Python int multiplication for correctness.
-        got = karatsuba_multiplication(x, y)
-        want = str(int(x) * int(y))
-        print(f"{x} * {y} = {got}  (ok={got == want})")

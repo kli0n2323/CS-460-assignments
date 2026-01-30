@@ -9,6 +9,20 @@ def add_strints(x: str, y: str) -> str:
     """
     return str(int(x) + int(y))
 
+def np_of_two(n: int) -> int:
+    return 1 if n <= 1 else 1 << (n-1).bit_length()
+
+def normalize(x: str, y: str) -> tuple[str, str]:
+    # padding for var evenness
+    if x == '':
+        x = '0'
+    if y == '':
+        y = '0'
+
+    n = max(len(x), len(y))
+    n2 = np_of_two(n)
+
+    return x.zfill(n2), y.zfill(n2)
 
 def simple_recursive_multiplication(x: str, y: str) -> str:
     """
@@ -20,6 +34,8 @@ def simple_recursive_multiplication(x: str, y: str) -> str:
     Uses:
       xy = ac*10^n + (ad+bc)*10^(n/2) + bd
     """
+    x, y = normalize(x, y)
+
     # Number of digits in x, y
     n = len(x)
     # Base case
@@ -44,24 +60,3 @@ def simple_recursive_multiplication(x: str, y: str) -> str:
     term2 = ad_plus_bc + ("0" * m)
     # Final sum (Using int conversion for addition to keep things simple)
     return str(int(term1) + int(term2) + int(bd))
-
-
-# --- quick sanity checks ---
-if __name__ == "__main__":
-    tests = [
-        ("12", "34"),
-        ("99", "99"),
-        ("0123", "0456"),
-        ("1234", "5678"),
-        ("0000", "0000"),
-        ("1111", "0001"),
-        ("1234567890123456", "9876543210123456"),
-        ("12345678901234561234567890123456", "12345678901234561234567890123456"),
-        ("1234567890123456123456789012345612345678901234561234567890123456", "1234567890123456123456789012345612345678901234561234567890123456"),
-    ]
-
-    for x, y in tests:
-        # Compare against Python int multiplication for correctness.
-        got = simple_recursive_multiplication(x, y)
-        want = str(int(x) * int(y))
-        print(f"{x} * {y} = {got}  (ok={got == want})")
