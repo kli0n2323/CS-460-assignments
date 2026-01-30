@@ -1,4 +1,4 @@
-from hw1_simple import add_strints
+from hw1.hw1_simple import add_strints
 
 def np_of_two(n: int) -> int:
     return 1 if n <= 1 else 1 << (n-1).bit_length()

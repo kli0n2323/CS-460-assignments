@@ -1,5 +1,5 @@
-from hw1_simple import add_strints, simple_recursive_multiplication
-from hw1_karatsuba import karatsuba_multiplication
+from hw1.hw1_simple import add_strints, simple_recursive_multiplication
+from hw1.hw1_karatsuba import karatsuba_multiplication
 import time, statistics
 
 def bench(fn, x, y, reps=200):
