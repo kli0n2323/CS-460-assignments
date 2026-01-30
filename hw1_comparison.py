@@ -1,0 +1,4 @@
+from hw1_simple import add_strints, simple_recursive_multiplication
+from hw1_karatsuba import karatsuba_multiplication
+import time
+
