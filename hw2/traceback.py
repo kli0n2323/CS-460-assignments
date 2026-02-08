@@ -38,6 +38,19 @@ def fancy_print(P):
             print(f"{P[i][j]:5d} ", end="")
         print()
 
+def alignment_count(true_x, true_y):
+    matches = 0
+    mismatches = 0
+    gaps = 0
+
+    for i in range(len(true_x)):
+        if true_x[i] == true_y[i]:
+            matches += 1
+        elif true_x[i] == '-' or true_y[i] == '-':
+            gaps += 1
+        elif true_x[i] != true_y[i]:
+            mismatches += 1
+    print(f"MATCHES: {matches} | MISMATCHES: {mismatches} | GAPS: {gaps}")
 
 def traceback(X, Y):
     P = NEEDLEMAN_WUNCH(X, Y)
@@ -78,17 +91,19 @@ def traceback(X, Y):
             i -= 1
             j -= 1
             continue
-        if curr == left:
-            x_aligned.append('-')
-            y_aligned.append(Y[j - 1])
 
-            j -= 1
-            continue
         if curr == up:
             x_aligned.append(X[i - 1])
             y_aligned.append('-')
 
             i -= 1
+            continue
+
+        if curr == left:
+            x_aligned.append('-')
+            y_aligned.append(Y[j - 1])
+
+            j -= 1
             continue
 
         if (curr == diagonal):
@@ -105,7 +120,8 @@ def traceback(X, Y):
 
     print(true_x)
     print(true_y)
-    print('')
+
+    return true_x, true_y
 
 
 # RUN PROGRAM
@@ -126,4 +142,6 @@ for pair in tests:
 
     P = NEEDLEMAN_WUNCH(X, Y)
     #fancy_print(P)
-    alignment = traceback(X, Y)
+    a_x, a_y = traceback(X, Y)
+    alignment_count(a_x, a_y)
+    print('')
