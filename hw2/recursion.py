@@ -71,11 +71,17 @@ def traceback(X, Y):
         up = P[i - 1][j] + a_gap
         left = P[i][j - 1] + a_gap
 
-        if curr == diagonal:
+        if (curr == diagonal) and (X[i - 1] == Y[j - 1]):
             x_aligned.append(X[i - 1])
             y_aligned.append(Y[j - 1])
 
             i -= 1
+            j -= 1
+            continue
+        if curr == left:
+            x_aligned.append('-')
+            y_aligned.append(Y[j - 1])
+
             j -= 1
             continue
         if curr == up:
@@ -84,12 +90,15 @@ def traceback(X, Y):
 
             i -= 1
             continue
-        if curr == left:
-            x_aligned.append('-')
+
+        if (curr == diagonal):
+            x_aligned.append(X[i - 1])
             y_aligned.append(Y[j - 1])
 
+            i -= 1
             j -= 1
             continue
+
     
     true_x = ''.join(reversed(x_aligned))
     true_y = ''.join(reversed(y_aligned))
