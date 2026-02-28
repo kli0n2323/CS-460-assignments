@@ -55,6 +55,61 @@ def find_path(G: list[list[int]], source: int, destination: int) -> list[int] | 
         path = path
     return path
 
+
+def max_flow(G:list[list[int]], source:int, destination:int):
+    # Shortcut to size of graph
+    n = len(G)
+    # Initialize return value
+    f_max = 0
+    # Create residual graph. Need deep copy to avoid
+    # mutating the input graph G
+    R = deepcopy(G)
+    # Find an initial augmenting path in R
+    augmenting = find_path(R, source, destination)
+    # While there is an augmenting path
+    while augmenting is not None:
+        # f_path = smallest edge of the augmenting path
+
+        f_path = float('inf')
+        i = 0
+        while i < len(augmenting) - 1:
+            u = augmenting[i]
+            v = augmenting[i +1]
+            w = R[u][v]
+            if w < f_path:
+                f_path = w
+            i += 1
+        f_max += f_path
+
+        for i in range(len(augmenting)-2):
+            u = augmenting[i]
+            v = augmenting[i+1]
+
+            R[u][v] -= f_path
+            R[v][u] += f_path
+
+        augmenting = find_path(R, source_vertex, destination_vertex)
+
+    return f_max
+
+
+
+def reach(graph:list[list[int]], s:int) -> list[int]:
+    # Shortcuts
+    n = len(graph)
+    no_edge = graph[0][0]
+    reachable = []
+    explore_next = [s]
+    while explore_next:
+        u = explore_next.pop()
+        if u not in reachable:
+            reachable.append(u)
+            for v in range(n):
+                if graph[u][v] != no_edge:
+                    if v not in explore_next:
+                        explore_next.append(v)
+    return reachable
+
 graph = [
     # 0   1   2   3   4
     [ 0, 10,  0,  0,  4], # 0
@@ -66,28 +121,4 @@ graph = [
 
 source_vertex = 0
 destination_vertex = 3
-print(find_path(graph, source_vertex, destination_vertex))
-
-
-def max_flow(G:list[list[int]], source:int, destination:int):
-    # Shortcut to size of graph
-    n = len(G)
-    # Initialize return value
-    f_max = 0
-    # Create residual graph. Need deep copy to avoid
-    # mutating the input graph G
-    R = deepcopy(G)
-    # Find an initial augmenting path in R
-    augmenting = find_path(R)
-    # While there is an augmenting path
-    while augmenting is not None:
-        # f_path = smallest edge of the augmenting path
-
-        f_path = float()
-
-        # add the path's capacity to the graph's max flow
-        # Reduce capacity of forward edges in augmenting graph by f_max
-        # Add reverse edges with f_max on the path
-        # find the next augmenting path in R
-    # Done
-    return f_max
+print(max_flow(graph, source_vertex, destination_vertex))
