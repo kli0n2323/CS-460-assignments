@@ -81,16 +81,16 @@ def max_flow(G:list[list[int]], source:int, destination:int):
             i += 1
         f_max += f_path
 
-        for i in range(len(augmenting)-2):
+        for i in range(len(augmenting) - 1):
             u = augmenting[i]
             v = augmenting[i+1]
 
             R[u][v] -= f_path
             R[v][u] += f_path
 
-        augmenting = find_path(R, source_vertex, destination_vertex)
+        augmenting = find_path(R, source, destination)
 
-    return f_max
+    return R, f_max
 
 
 
@@ -110,7 +110,31 @@ def reach(graph:list[list[int]], s:int) -> list[int]:
                         explore_next.append(v)
     return reachable
 
-graph = [
+
+def reachable_from_S(R, s):
+    n = len(R)
+    S = reach(R, s)
+    reachable = [False] * n
+    for i in range(n):
+        reachable[i] = (i in S)
+    return reachable
+
+
+def find_min_cut(G, R, s):
+    min_cut = []
+    reachable = reachable_from_S(R, s)
+    n = len(G)
+
+    for u in range(n):
+        if reachable[u] == True:
+            for v in range(n):
+                if (G[u][v] > 0) and (reachable[v] == False):
+                    min_cut.append((u, v))
+    return min_cut
+
+
+
+G = [
     # 0   1   2   3   4
     [ 0, 10,  0,  0,  4], # 0
     [ 0,  0,  2,  0,  0], # 1
@@ -119,6 +143,11 @@ graph = [
     [ 0,  0,  2,  0,  0]  # 4
 ]
 
-source_vertex = 0
-destination_vertex = 3
-print(max_flow(graph, source_vertex, destination_vertex))
+s= 0
+d = 3
+R, f_max = max_flow(G, s, d)
+M = find_min_cut(G, R, s)
+
+print("Max flow:", f_max)
+print("Min cut edges:", M)
+print("Cut capacity:", sum(G[u][v] for (u,v) in M))
